@@ -5,16 +5,19 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import './page.css';
 
 export default function Signup() {
+  // State variables for user input
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [message, setMessage] = useState("");
 
+  // Handle signup event
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
+      console.log("Firebase user created successfully.");
 
       const res = await fetch("http://localhost:5000/api/auth/signup", {
         method: "POST",
@@ -22,13 +25,16 @@ export default function Signup() {
         body: JSON.stringify({ firstName, lastName, email, password }),
       });
 
+      const data = await res.json();
+      console.log("Backend response:", data);
+
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Backend signup failed");
+        throw new Error(data.error || "Backend signup failed");
       }
 
       setMessage("Signup successful!");
     } catch (error) {
+      console.error("Signup error:", error);
       setMessage(error.message);
     }
   };
