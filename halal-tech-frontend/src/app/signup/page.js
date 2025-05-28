@@ -1,13 +1,14 @@
-"use client";
-
+'use client';
 import { useState } from "react";
 import { auth } from "../../lib/firebaseClient";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import './page.css';
 
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("jobSeeker");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSignup = async (e) => {
@@ -18,7 +19,7 @@ export default function Signup() {
       const res = await fetch("http://localhost:5000/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, role }),
+        body: JSON.stringify({ firstName, lastName, email, password }),
       });
 
       if (!res.ok) {
@@ -33,38 +34,46 @@ export default function Signup() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "auto", padding: 20 }}>
-      <h2>Signup</h2>
-      <form onSubmit={handleSignup}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={{ width: "100%", padding: 8, marginBottom: 10 }}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          style={{ width: "100%", padding: 8, marginBottom: 10 }}
-        />
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          style={{ width: "100%", padding: 8, marginBottom: 10 }}
-        >
-          <option value="jobSeeker">Job Seeker</option>
-          <option value="employer">Employer</option>
-        </select>
-        <button type="submit" style={{ width: "100%", padding: 10 }}>
-          Sign Up
-        </button>
-      </form>
-      {message && <p>{message}</p>}
+    <div className="signup-container">
+      <div className="signup-card">
+        <h2 className="signup-title">Sign up if you are a first-time user</h2>
+        <form onSubmit={handleSignup} className="signup-form grid grid-cols-2 gap-4">
+          <input
+            type="text"
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            required
+            className="signup-input"
+          />
+          <input
+            type="text"
+            placeholder="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            required
+            className="signup-input"
+          />
+          <input
+            type="email"
+            placeholder="Email ID"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="signup-input col-span-2"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="signup-input col-span-2"
+          />
+          <button type="submit" className="signup-button col-span-2">Sign Up</button>
+        </form>
+        {message && <p className="signup-message">{message}</p>}
+      </div>
     </div>
   );
 }
